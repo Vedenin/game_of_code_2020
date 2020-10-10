@@ -15,4 +15,8 @@ public interface GerritAPI {
 
     @GET("stops/{id}/stopTimes?limit=25")
     Call<List<Change>> loadChanges(@Path("id") String id);
+
+
+    @GET("stops/")
+    Call<List<BusStop>> loadHistory();
 }
