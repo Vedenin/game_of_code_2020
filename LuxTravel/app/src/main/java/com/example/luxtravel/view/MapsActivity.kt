@@ -1,15 +1,13 @@
 package com.example.luxtravel.view
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,8 +29,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 
 
 /**
@@ -54,16 +50,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mapFragment.getMapAsync(this)
 
         findViewById<View>(R.id.emergencyButton).setOnClickListener { view ->
-            startActivity(Intent(this, UserActivity::class.java))
+          // todo: malke request and show pins
         }
 
         findViewById<View>(R.id.busStopsButton).setOnClickListener { view ->
-            startActivity(Intent(this, UserActivity::class.java))
+            val phone = "+352 111 111 111"
+            val intent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null))
+            startActivity(intent)
         }
 
         TTS(this, "Slavik kak dela")
         TTS(this, "Evgeny kak dela")
-
     }
 
     private fun getHistoryData() {
@@ -143,7 +140,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     override fun onLocationChanged(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11F));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F));
 
     }
 

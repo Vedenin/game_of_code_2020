@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    >
 
     <fragment
         android:id="@+id/map"
@@ -14,17 +15,31 @@
         android:layout_height="match_parent"
         tools:context=".view.MapsActivity" />
 
-    <ImageView
-        android:id="@+id/emergencyButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary" />
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/right_labels"
+        fab:fab_labelsPosition="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp">
 
-    <ImageView
-        android:id="@+id/busStopsButton"
-        android:layout_marginTop="100dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/colorAccent" />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/busStopsButton"
+            fab:fab_title="Emergency Button"
+            android:layout_width="wrap_content"
+            fab:fab_icon="@android:drawable/sym_contact_card"
+            android:layout_height="wrap_content" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/emergencyButton"
+            fab:fab_title="Transport near me"
+            android:layout_width="wrap_content"
+            fab:fab_icon="@android:drawable/ic_menu_call"
+            android:layout_height="wrap_content" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

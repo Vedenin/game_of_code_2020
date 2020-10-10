@@ -45,6 +45,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
 
     implementation 'com.pixplicity.easyprefs:library:1.9.0'
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
 
 
 
