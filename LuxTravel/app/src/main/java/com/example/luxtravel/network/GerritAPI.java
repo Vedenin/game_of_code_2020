@@ -17,6 +17,6 @@ public interface GerritAPI {
     Call<List<Change>> loadChanges(@Path("id") String id);
 
 
-    @GET("stops/")
+    @GET("metrics/")
     Call<List<BusStop>> loadHistory();
 }
