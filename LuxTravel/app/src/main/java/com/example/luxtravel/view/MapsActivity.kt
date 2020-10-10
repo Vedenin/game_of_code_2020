@@ -54,7 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             // todo: clean history markers
             mMap.clear()
             getButStopsPins()
-           // getButStops("000200419024");
+            // getButStops("000200419024");
         }
 
         findViewById<View>(R.id.busStopsButton).setOnClickListener { view ->
@@ -68,10 +68,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         getButHistoryPins()
     }
 
-    private fun getButStops( id : String) {
+    private fun getButStops(id: String) {
         val controller = Controller()
         controller.getButStopTimer(object : BusStopCallback {
             override fun onReadyBusTop(list: List<Change>) {
+                TTS(this@MapsActivity, list.toString())
                 AlertDialog.Builder(this@MapsActivity)
                     .setTitle("Closest Schedule")
                     .setMessage(list.toString())
@@ -102,8 +103,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                     m.tag = it.id
 
                 }.takeIf { (0..100).random().equals(2) }
+                getButStops(list[0].id)
             }
-
         })
     }
 
@@ -121,7 +122,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                             .title(it.name)
                             .snippet(it.name)
                     )
-                 //   m.tag = it.id
+                    //   m.tag = it.id
 
                 }.takeIf { (0..100).random().equals(2) }
             }
@@ -129,7 +130,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         })
     }
 
-    interface HistoryCallback{
+    interface HistoryCallback {
         fun onReadyBusTop(list: List<BusStop>);
     }
 
@@ -141,7 +142,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         fun onReadyBusTop(list: List<Change>);
     }
 
-
     override fun onMarkerClick(p0: Marker?): Boolean {
         return true
     }
@@ -151,7 +151,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mMap.setOnMarkerClickListener {
             TTS(this, it.title)
             it.showInfoWindow()
-            if(it.tag != null) {
+            if (it.tag != null) {
                 getButStops(it.tag.toString());
             }
             true
