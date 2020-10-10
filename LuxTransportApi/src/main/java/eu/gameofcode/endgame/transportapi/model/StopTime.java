@@ -18,6 +18,8 @@ public class StopTime {
     private String routName;
     @ManyToOne
     private Stop stop;
+    @ManyToOne
+    private Calendar calendar;
 
     public int getId() {
         return id;
@@ -65,5 +67,13 @@ public class StopTime {
 
     public void setStop(Stop stop) {
         this.stop = stop;
+    }
+
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
 }

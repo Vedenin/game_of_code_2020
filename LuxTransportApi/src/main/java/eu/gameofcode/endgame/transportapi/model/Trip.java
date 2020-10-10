@@ -13,6 +13,8 @@ public class Trip {
     private Route route;
     private String tripHeadSigh;
     private String routeName;
+    @ManyToOne
+    private Calendar calendar;
 
     public String getTripId() {
         return tripId;
@@ -44,5 +46,13 @@ public class Trip {
 
     public void setRouteName(String routeName) {
         this.routeName = routeName;
+    }
+
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
 }
