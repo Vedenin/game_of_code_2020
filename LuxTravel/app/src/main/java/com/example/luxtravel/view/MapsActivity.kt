@@ -65,8 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     private fun getHistoryData() {
-       // val controller = Controller()
-        //controller.start()
+        getButHistoryPins()
     }
 
     private fun getButStops( id : String) {
@@ -108,6 +107,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         })
     }
 
+    fun getButHistoryPins() {
+        val controller = Controller()
+        controller.getHistoryData(object : HistoryCallback {
+            override fun onReadyBusTop(list: List<BusStop>) {
+
+                list.forEach {
+
+                    val sydney = LatLng(it.lat.toDouble(), it.lon.toDouble())
+                    val m = mMap.addMarker(
+                        MarkerOptions()
+                            .position(sydney)
+                            .title(it.name)
+                            .snippet(it.name)
+                    )
+                 //   m.tag = it.id
+
+                }.takeIf { (0..100).random().equals(2) }
+            }
+
+        })
+    }
+
+    interface HistoryCallback{
+        fun onReadyBusTop(list: List<BusStop>);
+    }
 
     interface PinsCallback {
         fun onReadyBusTop(list: List<BusStop>);
@@ -127,7 +151,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mMap.setOnMarkerClickListener {
             TTS(this, it.title)
             it.showInfoWindow()
-            getButStops(it.tag.toString());
+            if(it.tag != null) {
+                getButStops(it.tag.toString());
+            }
             true
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
