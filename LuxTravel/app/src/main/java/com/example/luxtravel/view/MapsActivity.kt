@@ -94,7 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mMap = googleMap
         mMap.setOnMarkerClickListener {
             TTS(this, "Slavik kak dela")
-
+            it.showInfoWindow()
             true
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
