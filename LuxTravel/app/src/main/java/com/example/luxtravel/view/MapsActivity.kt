@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.luxtravel.R
+import com.example.luxtravel.network.BusStop
 import com.example.luxtravel.network.Change
 import com.example.luxtravel.network.Controller
 import com.example.luxtravel.utils.TTS
@@ -83,12 +84,40 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                     .setTitle("Closest Schedule")
                     .setMessage(list.toString())
                     .setCancelable(false)
-                    .setPositiveButton("ok"
+                    .setPositiveButton(
+                        "ok"
                     ) { dialog, which ->
                         // Whatever...
                     }.show()
             }
         })
+    }
+
+
+    fun getButStopsPins() {
+        val controller = Controller()
+        controller.start2(object : PinsCallback {
+            override fun onReadyBusTop(list: List<BusStop>) {
+
+                list.forEach {
+
+                    val sydney = LatLng(it.lat.toDouble(), it.lon.toDouble())
+                    mMap.addMarker(
+                        MarkerOptions()
+                            .position(sydney)
+                            .title(it.name)
+                            .snippet(it.name)
+                    )
+
+                }
+            }
+
+        })
+    }
+
+
+    interface PinsCallback {
+        fun onReadyBusTop(list: List<BusStop>);
     }
 
     interface BusStopCallback {
@@ -102,14 +131,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        TTS(this, "Evgeny kak dela")
         return true
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.setOnMarkerClickListener {
-            TTS(this, "Slavik kak dela")
+            TTS(this, it.title)
             it.showInfoWindow()
             true
         }
@@ -130,6 +158,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             mMap.isMyLocationEnabled = true;
         }
         getHistoryData()
+        getButStopsPins()
     }
 
     @Synchronized

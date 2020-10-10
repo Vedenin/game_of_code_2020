@@ -58,8 +58,7 @@ public class Controller  {
         });
     }
 
-
-    public void start2() {
+    public void start2(MapsActivity.PinsCallback callback) {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -71,23 +70,24 @@ public class Controller  {
 
         GerritAPI gerritAPI = retrofit.create(GerritAPI.class);
 
-        Call<List<Change>> call = gerritAPI.loadChanges2();
-        call.enqueue(new Callback<List<Change>>() {
+        Call<List<BusStop>> call = gerritAPI.loadChanges2();
+        call.enqueue(new Callback<List<BusStop>>() {
             @Override
-            public void onResponse(Call<List<Change>> call, Response<List<Change>> response) {
+            public void onResponse(Call<List<BusStop>> call, Response<List<BusStop>> response) {
                 Log.e("!!!!!!!!!!!", "REq=");
 
                 if (response.isSuccessful()) {
                     Log.e("!!!!!!!!!!!", "isSuccessful=" + response.code());
-                    List<Change> changesList = response.body();
+                    List<BusStop> changesList = response.body();
                     changesList.forEach(change -> Log.e("!!!!!!!!!!!", "SBJ=" + change.toString()));
+                    callback.onReadyBusTop(changesList);
                 } else {
                     System.out.println(response.errorBody());
                     Log.e("!!!!!!!!!!!", "SBJ ERROR=" + response.errorBody());
                 }
             }
 
-            public void onFailure(Call<List<Change>> call, Throwable t) {
+            public void onFailure(Call<List<BusStop>> call, Throwable t) {
                 t.printStackTrace();
             }
 
