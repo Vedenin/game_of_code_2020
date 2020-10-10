@@ -1,0 +1,48 @@
+package eu.gameofcode.endgame.transportapi.model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
+public class Trip {
+
+    @Id
+    private String tripId;
+    @ManyToOne
+    private Route route;
+    private String tripHeadSigh;
+    private String routeName;
+
+    public String getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(String tripId) {
+        this.tripId = tripId;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
+    public String getTripHeadSigh() {
+        return tripHeadSigh;
+    }
+
+    public void setTripHeadSigh(String tripHeadSigh) {
+        this.tripHeadSigh = tripHeadSigh;
+    }
+
+    public String getRouteName() {
+        return routeName;
+    }
+
+    public void setRouteName(String routeName) {
+        this.routeName = routeName;
+    }
+}
