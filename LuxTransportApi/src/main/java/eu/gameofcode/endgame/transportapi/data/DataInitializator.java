@@ -1,13 +1,7 @@
 package eu.gameofcode.endgame.transportapi.data;
 
-import eu.gameofcode.endgame.transportapi.model.Route;
-import eu.gameofcode.endgame.transportapi.model.Stop;
-import eu.gameofcode.endgame.transportapi.model.StopTime;
-import eu.gameofcode.endgame.transportapi.model.Trip;
-import eu.gameofcode.endgame.transportapi.repository.RouteRepository;
-import eu.gameofcode.endgame.transportapi.repository.StopRepository;
-import eu.gameofcode.endgame.transportapi.repository.StopTimeRepository;
-import eu.gameofcode.endgame.transportapi.repository.TripRepository;
+import eu.gameofcode.endgame.transportapi.model.*;
+import eu.gameofcode.endgame.transportapi.repository.*;
 import eu.gameofcode.endgame.transportapi.service.FileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,10 +25,13 @@ public class DataInitializator {
     private TripRepository tripRepository;
     @Autowired
     private StopTimeRepository stopTimeRepository;
+    @Autowired
+    private CalendarRepository calendarRepository;
 
     public void initializeData() {
         readRoutes();
         readStops();
+        readCalendar();
         readTrips();
         readStopTimes();
     }
@@ -43,7 +40,7 @@ public class DataInitializator {
         try {
             List<String> routesLines =  fileReader.getFileLines("scheduledata/routes.txt");
             for (int i=1; i< routesLines.size(); i++) {
-                String routeAttr [] = routesLines.get(i).split(",");
+                String routeAttr [] = routesLines.get(i).replace("\"","").split(",");
 
                 Route route = new Route();
                 route.setId(routeAttr[0]);
@@ -80,6 +77,33 @@ public class DataInitializator {
         }
     }
 
+    private void readCalendar() {
+        List<String> calendarLines = null;
+        try {
+            calendarLines = fileReader.getFileLines("scheduledata/calendar.txt");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 1; i < calendarLines.size(); i++) {
+            String attr [] = calendarLines.get(i).replace("\"","").split(",");
+
+            Calendar calendar = new Calendar();
+            calendar.setId(attr[0]);
+            calendar.setMonday(attr[1].equals("1") ? true : false);
+            calendar.setTuesday(attr[2].equals("1") ? true : false);
+            calendar.setWednesday(attr[3].equals("1") ? true : false);
+            calendar.setThursday(attr[4].equals("1") ? true : false);
+            calendar.setFriday(attr[5].equals("1") ? true : false);
+            calendar.setSaturday(attr[6].equals("1") ? true : false);
+            calendar.setSunday(attr[7].equals("1") ? true : false);
+
+            calendarRepository.save(calendar);
+        }
+    }
+
     private void readTrips() {
         List<String> tripLines = null;
         try {
@@ -99,6 +123,7 @@ public class DataInitializator {
             trip.setRoute(route);
             trip.setTripHeadSigh(attr[3] + " " + attr[4]);
             trip.setRouteName(route.getShortName());
+            trip.setCalendar(calendarRepository.findById(attr[1]).get());
 
             tripRepository.save(trip);
         }
@@ -122,6 +147,7 @@ public class DataInitializator {
             stopTime.setTripHeadSign(trip.getTripHeadSigh());
             stopTime.setRoutName(trip.getRouteName());
             stopTime.setStop(stopRepository.findById(attr[3]).get());
+            stopTime.setCalendar(trip.getCalendar());
 
             String arrival = attr[1].length() > 7 ? attr[1] : "0"+attr[1];
             String depart = attr[2].length() > 7 ? attr[2] : "0"+attr[2];
