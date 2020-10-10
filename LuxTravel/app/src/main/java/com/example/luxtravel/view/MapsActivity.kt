@@ -52,7 +52,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
         findViewById<View>(R.id.emergencyButton).setOnClickListener { view ->
             // todo: clean history markers
-            getButStops("000200419024");
+            mMap.clear()
+            getButStopsPins()
+           // getButStops("000200419024");
         }
 
         findViewById<View>(R.id.busStopsButton).setOnClickListener { view ->
@@ -100,7 +102,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                     )
                     m.tag = it.id
 
-                }
+                }.takeIf { (0..100).random().equals(2) }
             }
 
         })
@@ -113,11 +115,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     interface BusStopCallback {
         fun onReadyBusTop(list: List<Change>);
-    }
-
-    private fun getToilets() {
-        //  val controller = Controller()
-        // controller.start2()
     }
 
 
@@ -150,7 +147,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             mMap.isMyLocationEnabled = true;
         }
         getHistoryData()
-        getButStopsPins()
     }
 
     @Synchronized
@@ -165,8 +161,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     override fun onConnected(p0: Bundle?) {
         mLocationRequest = LocationRequest()
-        mLocationRequest!!.interval = 5000
-        mLocationRequest!!.fastestInterval = 5000
+        mLocationRequest!!.interval = 15000
+        mLocationRequest!!.fastestInterval = 15000
         mLocationRequest!!.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         if (ContextCompat.checkSelfPermission(
                 this,
