@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Change {
 
-
-
     @SerializedName("arrivalTime")
     public String arrivalTime;
     @SerializedName("departureTime")
@@ -18,19 +16,10 @@ public class Change {
 
     @Override
     public String toString() {
-        return "Change{" +
-                "arrivalTime='" + arrivalTime + '\'' +
-                ", departureTime='" + departureTime + '\'' +
-                ", tripHeadSign='" + tripHeadSign + '\'' +
-                ", routName='" + routName + '\'' +
-                '}';
+        return "\n\nNext stop time\n" +
+                "Arrival Time is:'" + arrivalTime + '\n' +
+                "Departure Time is:'" + departureTime + '\n' +
+                "Trip Head Sign is:'" + tripHeadSign + '\n' +
+                "Rout Name is:'" + routName + '\n';
     }
 }
-
-
-
-
-//"arrivalTime":"16:25:20",
-//        "departureTime":"16:25:20",
-//        "tripHeadSign":"Luxembourg Centre Hospitalier",
-//        "routName":"13"

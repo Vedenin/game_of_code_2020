@@ -2,6 +2,7 @@ package com.example.luxtravel.view
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.luxtravel.R
+import com.example.luxtravel.network.Change
 import com.example.luxtravel.network.Controller
 import com.example.luxtravel.utils.TTS
 import com.google.android.gms.common.ConnectionResult
@@ -69,19 +71,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                 .snippet("INFO")
             // todo: setTag
         )
-
         val controller = Controller()
         //controller.start()
     }
 
     private fun getButStops() {
         val controller = Controller()
-        controller.getButStopTimer()
+        controller.getButStopTimer(object : BusStopCallback {
+            override fun onReadyBusTop(list: List<Change>) {
+                AlertDialog.Builder(this@MapsActivity)
+                    .setTitle("Closest Schedule")
+                    .setMessage(list.toString())
+                    .setCancelable(false)
+                    .setPositiveButton("ok"
+                    ) { dialog, which ->
+                        // Whatever...
+                    }.show()
+            }
+        })
+    }
+
+    interface BusStopCallback {
+        fun onReadyBusTop(list: List<Change>);
     }
 
     private fun getToilets() {
-      //  val controller = Controller()
-       // controller.start2()
+        //  val controller = Controller()
+        // controller.start2()
     }
 
 
