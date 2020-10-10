@@ -25,7 +25,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -62,7 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     private fun getHistoryData() {
-        val sydney = LatLng(49.0, 6.0)
+        val sydney = LatLng(49.0, 6.2)
         mMap.addMarker(
             MarkerOptions()
                 .position(sydney)
@@ -72,17 +71,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         )
 
         val controller = Controller()
-        controller.start()
+        //controller.start()
     }
 
     private fun getButStops() {
         val controller = Controller()
-        controller.start()
+        controller.getButStopTimer()
     }
 
     private fun getToilets() {
-        val controller = Controller()
-        controller.start()
+      //  val controller = Controller()
+       // controller.start2()
     }
 
 
