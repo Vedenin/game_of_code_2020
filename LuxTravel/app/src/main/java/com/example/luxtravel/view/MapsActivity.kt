@@ -1,24 +1,24 @@
 package com.example.luxtravel.view
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.luxtravel.R
+import com.example.luxtravel.network.BusStop
+import com.example.luxtravel.network.Change
 import com.example.luxtravel.network.Controller
 import com.example.luxtravel.utils.TTS
-import com.example.luxtravel.view.ui.login.UserActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
@@ -31,15 +31,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
-
 
 /**
  * https://www.vogella.com/tutorials/Retrofit/article.html
  */
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     var mLocationRequest: LocationRequest? = null
@@ -54,38 +51,96 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mapFragment.getMapAsync(this)
 
         findViewById<View>(R.id.emergencyButton).setOnClickListener { view ->
-            startActivity(Intent(this, UserActivity::class.java))
+            // todo: clean history markers
+            getToilets()
+            getButStops()
         }
 
         findViewById<View>(R.id.busStopsButton).setOnClickListener { view ->
-            startActivity(Intent(this, UserActivity::class.java))
+            val phone = "+352 111 111 111"
+            val intent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null))
+            startActivity(intent)
         }
-
-        TTS(this, "Slavik kak dela")
-        TTS(this, "Evgeny kak dela")
-
     }
 
     private fun getHistoryData() {
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-
+        val sydney = LatLng(49.0, 6.2)
+        mMap.addMarker(
+            MarkerOptions()
+                .position(sydney)
+                .title("YOUR TITLE")
+                .snippet("INFO")
+            // todo: setTag
+        )
         val controller = Controller()
-        controller.start()
+        //controller.start()
     }
 
     private fun getButStops() {
         val controller = Controller()
-        controller.start()
+        controller.getButStopTimer(object : BusStopCallback {
+            override fun onReadyBusTop(list: List<Change>) {
+                AlertDialog.Builder(this@MapsActivity)
+                    .setTitle("Closest Schedule")
+                    .setMessage(list.toString())
+                    .setCancelable(false)
+                    .setPositiveButton(
+                        "ok"
+                    ) { dialog, which ->
+                        // Whatever...
+                    }.show()
+            }
+        })
+    }
+
+
+    fun getButStopsPins() {
+        val controller = Controller()
+        controller.start2(object : PinsCallback {
+            override fun onReadyBusTop(list: List<BusStop>) {
+
+                list.forEach {
+
+                    val sydney = LatLng(it.lat.toDouble(), it.lon.toDouble())
+                    mMap.addMarker(
+                        MarkerOptions()
+                            .position(sydney)
+                            .title(it.name)
+                            .snippet(it.name)
+                    )
+
+                }
+            }
+
+        })
+    }
+
+
+    interface PinsCallback {
+        fun onReadyBusTop(list: List<BusStop>);
+    }
+
+    interface BusStopCallback {
+        fun onReadyBusTop(list: List<Change>);
     }
 
     private fun getToilets() {
-        val controller = Controller()
-        controller.start()
+        //  val controller = Controller()
+        // controller.start2()
+    }
+
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        return true
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.setOnMarkerClickListener {
+            TTS(this, it.title)
+            it.showInfoWindow()
+            true
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(
                     this,
@@ -102,6 +157,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             buildGoogleApiClient();
             mMap.isMyLocationEnabled = true;
         }
+        getHistoryData()
+        getButStopsPins()
     }
 
     @Synchronized
@@ -116,8 +173,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     override fun onConnected(p0: Bundle?) {
         mLocationRequest = LocationRequest()
-        mLocationRequest!!.interval = 1000
-        mLocationRequest!!.fastestInterval = 1000
+        mLocationRequest!!.interval = 5000
+        mLocationRequest!!.fastestInterval = 5000
         mLocationRequest!!.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -143,7 +200,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     override fun onLocationChanged(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11F));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F));
 
     }
 
@@ -164,7 +221,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                 AlertDialog.Builder(this)
                     .setTitle("Location Permission Needed")
                     .setMessage("This app needs the Location permission, please accept to use location functionality")
-                    .setPositiveButton("OK"
+                    .setPositiveButton(
+                        "OK"
                     ) { _, _ -> //Prompt the user once explanation has been shown
                         ActivityCompat.requestPermissions(
                             this@MapsActivity,

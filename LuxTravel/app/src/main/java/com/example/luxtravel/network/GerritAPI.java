@@ -9,6 +9,9 @@ import retrofit2.http.Query;
 
 public interface GerritAPI {
 
-    @GET("changes/")
-    Call<List<Change>> loadChanges(@Query("q") String status);
+    @GET("stops/")
+    Call<List<BusStop>> loadChanges2();
+
+    @GET("stops/000200403009/stopTimes?limit=25")
+    Call<List<Change>> loadChanges();
 }
