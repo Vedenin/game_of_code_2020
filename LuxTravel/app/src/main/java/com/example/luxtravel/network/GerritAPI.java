@@ -5,6 +5,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface GerritAPI {
@@ -12,6 +13,6 @@ public interface GerritAPI {
     @GET("stops/")
     Call<List<BusStop>> loadChanges2();
 
-    @GET("stops/000200403009/stopTimes?limit=25")
-    Call<List<Change>> loadChanges();
+    @GET("stops/{id}/stopTimes?limit=25")
+    Call<List<Change>> loadChanges(@Path("id") String id);
 }

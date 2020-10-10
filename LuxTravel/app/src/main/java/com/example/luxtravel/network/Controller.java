@@ -17,11 +17,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Controller  {
 
     //static final String BASE_URL = "https://git.eclipse.org/r/";
-    static final String BASE_URL = "http://3d2d87943bb0.ngrok.io/";
+    static final String BASE_URL = "http://163a9f4e4073.ngrok.io/";
 
     //
 
-    public void getButStopTimer(MapsActivity.BusStopCallback callback) {
+    public void getButStopTimer(MapsActivity.BusStopCallback callback, String id) {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -33,7 +33,7 @@ public class Controller  {
 
         GerritAPI gerritAPI = retrofit.create(GerritAPI.class);
 
-        Call<List<Change>> call = gerritAPI.loadChanges();
+        Call<List<Change>> call = gerritAPI.loadChanges(id);
         call.enqueue(new Callback<List<Change>>() {
             @Override
             public void onResponse(Call<List<Change>> call, Response<List<Change>> response) {
