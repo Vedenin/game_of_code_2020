@@ -2,15 +2,15 @@
     <string name="app_name">Lux Travel</string>
     <string name="title_activity_maps">Lux Travel</string>
     <string name="title_activity_user">Info</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Your Home Address</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Save your address</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="title_activity_start">StartActivity</string>
+    <string name="title_activity_start">Lux Travel</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
