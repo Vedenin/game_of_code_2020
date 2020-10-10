@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import com.example.luxtravel.R
 import com.example.luxtravel.network.Controller
 import com.example.luxtravel.utils.TTS
-import com.example.luxtravel.view.ui.login.UserActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
@@ -26,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -35,7 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions
  * https://www.vogella.com/tutorials/Retrofit/article.html
  */
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     var mLocationRequest: LocationRequest? = null
@@ -58,14 +58,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             val intent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null))
             startActivity(intent)
         }
-
-        TTS(this, "Slavik kak dela")
-        TTS(this, "Evgeny kak dela")
     }
 
     private fun getHistoryData() {
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        val sydney = LatLng(49.0, 6.0)
+        mMap.addMarker(
+            MarkerOptions()
+                .position(sydney)
+                .title("YOUR TITLE")
+                .snippet("INFO")
+                // todo: setTag
+        )
 
         val controller = Controller()
         controller.start()
@@ -81,8 +84,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         controller.start()
     }
 
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        TTS(this, "Evgeny kak dela")
+        return true
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.setOnMarkerClickListener {
+            TTS(this, "Slavik kak dela")
+
+            true
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(
                     this,
@@ -99,6 +113,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             buildGoogleApiClient();
             mMap.isMyLocationEnabled = true;
         }
+        getHistoryData()
     }
 
     @Synchronized
@@ -113,8 +128,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     override fun onConnected(p0: Bundle?) {
         mLocationRequest = LocationRequest()
-        mLocationRequest!!.interval = 1000
-        mLocationRequest!!.fastestInterval = 1000
+        mLocationRequest!!.interval = 5000
+        mLocationRequest!!.fastestInterval = 5000
         mLocationRequest!!.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         if (ContextCompat.checkSelfPermission(
                 this,
