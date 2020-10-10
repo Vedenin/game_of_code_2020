@@ -30,7 +30,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
-
 /**
  * https://www.vogella.com/tutorials/Retrofit/article.html
  */
@@ -50,7 +49,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mapFragment.getMapAsync(this)
 
         findViewById<View>(R.id.emergencyButton).setOnClickListener { view ->
-          // todo: malke request and show pins
+            // todo: clean history markers
+            getToilets()
+            getButStops()
         }
 
         findViewById<View>(R.id.busStopsButton).setOnClickListener { view ->
@@ -67,7 +68,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                 .position(sydney)
                 .title("YOUR TITLE")
                 .snippet("INFO")
-                // todo: setTag
+            // todo: setTag
         )
 
         val controller = Controller()
@@ -176,7 +177,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                 AlertDialog.Builder(this)
                     .setTitle("Location Permission Needed")
                     .setMessage("This app needs the Location permission, please accept to use location functionality")
-                    .setPositiveButton("OK"
+                    .setPositiveButton(
+                        "OK"
                     ) { _, _ -> //Prompt the user once explanation has been shown
                         ActivityCompat.requestPermissions(
                             this@MapsActivity,
