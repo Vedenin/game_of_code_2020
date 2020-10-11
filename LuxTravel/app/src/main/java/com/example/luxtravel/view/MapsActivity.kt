@@ -115,7 +115,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
                 list.forEach {
 
-                    val sydney = LatLng(it.lat.toDouble(), it.lon.toDouble())
+                    val sydney = LatLng(it.lon.toDouble(), it.lat.toDouble())
                     val m = mMap.addMarker(
                         MarkerOptions()
                             .position(sydney)
